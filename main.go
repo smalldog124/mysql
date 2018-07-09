@@ -90,6 +90,8 @@ func add(db *sql.DB) bool { //เก็บชุดคำสั่งไว้�
 		69,
 		1,
 	)
+	
+	defer statement.Close()
 
 	if err != nil{
 		panic(err.Error())
@@ -122,14 +124,8 @@ func edit(db *sql.DB,id string,fatherName string) bool{
 }
 
 func readByCitizenId(db *sql.DB,citizenId string) UserData{
-	statement, err := db.Query("SELECT * FROM user WHERE citizen_id = ?",citizenId)
-	
 	var userData UserData
-
-	defer statement.Close()
-
-	for statement.Next() {
-		err = statement.Scan(
+	err := db.QueryRow("SELECT * FROM user WHERE citizen_id = ?",citizenId).Scan(
 			&userData.Id,
 			&userData.CitizenId,
 			&userData.Firstname,
@@ -142,10 +138,9 @@ func readByCitizenId(db *sql.DB,citizenId string) UserData{
 			&userData.SoldierId,
 			&userData.AddressId,
 		)
+		
 		if err != nil {
 			panic(err.Error())
 		}
-	}
-
-	return userData
+		return userData
 }
