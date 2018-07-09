@@ -31,9 +31,13 @@ func main() {
 	fmt.Println("connect success")
 
 	defer db.Close()
+	read(db)
+}
 
+func read(db *sql.DB) []UserData{
 	results, err := db.Query("SELECT * FROM user")
 
+	var userDataList []UserData
 	for results.Next() {
 		var userData UserData
 
@@ -54,7 +58,10 @@ func main() {
 			panic(err.Error())
 		}
 
-		fmt.Println(userData)
+		userDataList = append(userDataList,userData)
+		fmt.Println(userDataList)
 	}
+
+	return userDataList
 	
 }
