@@ -30,7 +30,8 @@ func main() {
 
 	defer db.Close()
 	
-	fmt.Println(remove(db,"3"))
+	fmt.Println(edit(db,"4","สุชาติ"))
+	fmt.Println(read(db))
 }
 
 func read(db *sql.DB) []UserData{
@@ -99,10 +100,21 @@ func add(db *sql.DB) bool { //เก็บชุดคำสั่งไว้�
 	
 }
 
-func remove (db *sql.DB,id string) bool{
+func remove(db *sql.DB,id string) bool{
 	statement,_ := db.Prepare("DELETE FROM user WHERE user_id =?")
 
 	_, err := statement.Exec(id)
+	if err != nil{
+		panic(err.Error())
+	return false
+	}
+	return true
+}
+
+func edit(db *sql.DB,id string,fatherName string) bool{
+	statement,_ := db.Prepare("UPDATE `user` SET firstname_father = ? WHERE user_id = ?")
+
+	_, err := statement.Exec(fatherName,id)
 	if err != nil{
 		panic(err.Error())
 	return false
