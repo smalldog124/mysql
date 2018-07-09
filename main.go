@@ -32,10 +32,29 @@ func main() {
 
 	defer db.Close()
 
-	results, _ := db.Query("SELECT * FROM user")
+	results, err := db.Query("SELECT * FROM user")
 
 	for results.Next() {
-		results.Scan()
-	}
+		var userData UserData
 
+		err = results.Scan(
+			&userData.Id,
+			&userData.CitizenId,
+			&userData.Firstname,
+			&userData.Lastname,
+			&userData.BirthYear,
+			&userData.FirstnameFather,
+			&userData.LastnameFather,
+			&userData.FirstnameMother,
+			&userData.LastnameMother,
+			&userData.SoldierId,
+			&userData.AddressId,
+		)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		fmt.Println(userData)
+	}
+	
 }
