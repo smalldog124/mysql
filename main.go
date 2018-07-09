@@ -30,8 +30,7 @@ func main() {
 
 	defer db.Close()
 	
-	fmt.Println(edit(db,"4","สุชาติ"))
-	fmt.Println(read(db))
+	fmt.Println(readByCitizenId(db,"1209700620251"))
 }
 
 func read(db *sql.DB) []UserData{
@@ -120,4 +119,33 @@ func edit(db *sql.DB,id string,fatherName string) bool{
 	return false
 	}
 	return true
+}
+
+func readByCitizenId(db *sql.DB,citizenId string) UserData{
+	statement, err := db.Query("SELECT * FROM user WHERE citizen_id = ?",citizenId)
+	
+	var userData UserData
+
+	defer statement.Close()
+
+	for statement.Next() {
+		err = statement.Scan(
+			&userData.Id,
+			&userData.CitizenId,
+			&userData.Firstname,
+			&userData.Lastname,
+			&userData.BirthYear,
+			&userData.FirstnameFather,
+			&userData.LastnameFather,
+			&userData.FirstnameMother,
+			&userData.LastnameMother,
+			&userData.SoldierId,
+			&userData.AddressId,
+		)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+
+	return userData
 }
