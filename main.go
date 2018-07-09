@@ -29,8 +29,8 @@ func main() {
 	}
 
 	defer db.Close()
-	//fmt.Println(read(db))
-	fmt.Println(add(db))
+	
+	fmt.Println(remove(db,"3"))
 }
 
 func read(db *sql.DB) []UserData{
@@ -97,4 +97,15 @@ func add(db *sql.DB) bool { //เก็บชุดคำสั่งไว้�
 	}
 	return true
 	
+}
+
+func remove (db *sql.DB,id string) bool{
+	statement,_ := db.Prepare("DELETE FROM user WHERE user_id =?")
+
+	_, err := statement.Exec(id)
+	if err != nil{
+		panic(err.Error())
+	return false
+	}
+	return true
 }
