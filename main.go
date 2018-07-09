@@ -28,10 +28,9 @@ func main() {
 		fmt.Println("connect fail")
 	}
 
-	fmt.Println("connect success")
-
 	defer db.Close()
-	read(db)
+	//fmt.Println(read(db))
+	fmt.Println(add(db))
 }
 
 func read(db *sql.DB) []UserData{
@@ -63,5 +62,39 @@ func read(db *sql.DB) []UserData{
 	}
 
 	return userDataList
+	
+}
+
+func add(db *sql.DB) bool { //เก็บชุดคำสั่งไว้ในตัวแปร statement เพื่อการป้องกันความปลอดภัย เวลจะ insert ก็ทำการสั่ง exec เข้าไปในชุดคำสั่ง
+	statement, _ := db.Prepare(`INSERT INTO user ( 
+	 citizen_id,
+	 firstname,
+	 lastname,
+	 birthyear,
+	 firstname_father,
+	 lastname_father,
+	 firstname_mother,
+	 lastname_mother,
+	 soldier_id,
+	 address_id) 
+	 VALUES(?,?,?,?,?,?,?,?,?,?)`)
+
+	_, err := statement.Exec("1209700620251",
+		"นารีนารถ",
+		"เนรัญชร",
+		2538,
+		"ณัฐพงษ์",
+		"ฉิมวัย",
+		"กานต์วัฒน์",
+		"วงศ์อุดม",
+		69,
+		1,
+	)
+
+	if err != nil{
+		panic(err.Error())
+		return false
+	}
+	return true
 	
 }
